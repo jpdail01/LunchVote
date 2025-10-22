@@ -8,7 +8,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
 
-type AppState = 'setup' | 'user-join' | 'voting' | 'results';
+type AppState = 'setup' | 'voting' | 'results';
 
 interface Voter {
   id: string;
@@ -16,44 +16,49 @@ interface Voter {
   hasVoted: boolean;
 }
 
+const MAX_VOTERS = 5;
+
 export default function HomePage() {
   const [state, setState] = useState<AppState>('setup');
   const [pollTitle, setPollTitle] = useState("");
   const [choices, setChoices] = useState<string[]>([]);
   const [voters, setVoters] = useState<Voter[]>([]);
   const [votes, setVotes] = useState<Record<string, string>>({});
-  const [currentUserId, setCurrentUserId] = useState<string>("");
   const [currentUserName, setCurrentUserName] = useState<string>("");
+  const [showUserSetup, setShowUserSetup] = useState(false);
 
   const handleCreatePoll = (title: string, pollChoices: string[]) => {
     setPollTitle(title);
     setChoices(pollChoices);
-    setState('user-join');
+    setState('voting');
+    setShowUserSetup(true);
   };
 
   const handleUserJoin = (name: string) => {
-    const userId = `voter-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    setCurrentUserId(userId);
     setCurrentUserName(name);
-    
-    const newVoter: Voter = {
-      id: userId,
-      name: name,
-      hasVoted: false,
-    };
-    
-    setVoters([newVoter]);
-    setState('voting');
+    setShowUserSetup(false);
   };
 
   const handleVote = (choiceIndex: number) => {
-    setVotes({ ...votes, [currentUserId]: choiceIndex.toString() });
-    setVoters(voters.map(v => 
-      v.id === currentUserId ? { ...v, hasVoted: true } : v
-    ));
+    const userId = `voter-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     
-    if (voters.filter(v => v.hasVoted).length + 1 >= 5 || voters.length >= 5) {
+    const newVoter: Voter = {
+      id: userId,
+      name: currentUserName,
+      hasVoted: true,
+    };
+    
+    const updatedVoters = [...voters, newVoter];
+    const updatedVotes = { ...votes, [userId]: choiceIndex.toString() };
+    
+    setVoters(updatedVoters);
+    setVotes(updatedVotes);
+    setCurrentUserName("");
+    
+    if (updatedVoters.length >= MAX_VOTERS) {
       setState('results');
+    } else {
+      setShowUserSetup(true);
     }
   };
 
@@ -63,12 +68,11 @@ export default function HomePage() {
     setChoices([]);
     setVoters([]);
     setVotes({});
-    setCurrentUserId("");
     setCurrentUserName("");
+    setShowUserSetup(false);
   };
 
-  const currentUserVote = votes[currentUserId];
-  const hasVoted = currentUserVote !== undefined;
+  const votesRemaining = MAX_VOTERS - voters.length;
 
   return (
     <div className="min-h-screen bg-background">
@@ -97,27 +101,40 @@ export default function HomePage() {
           <PollCreator onCreatePoll={handleCreatePoll} />
         )}
 
-        {state === 'user-join' && (
-          <UserSetup onJoin={handleUserJoin} />
-        )}
-
         {state === 'voting' && (
-          <div className="grid lg:grid-cols-[1fr,320px] gap-6 max-w-5xl mx-auto">
-            <div>
-              <VotingInterface
-                title={pollTitle}
-                choices={choices}
-                onVote={handleVote}
-                hasVoted={hasVoted}
-                selectedChoice={currentUserVote !== undefined ? parseInt(currentUserVote) : undefined}
-              />
-            </div>
-            <div>
-              <VoterStatus 
-                voters={voters}
-                currentVoterId={currentUserId}
-              />
-            </div>
+          <div className="space-y-8">
+            {showUserSetup ? (
+              <div className="max-w-2xl mx-auto">
+                <div className="text-center mb-6">
+                  <h2 className="text-xl font-semibold mb-2">{pollTitle}</h2>
+                  <p className="text-muted-foreground">
+                    Participant {voters.length + 1} of {MAX_VOTERS}
+                  </p>
+                </div>
+                <UserSetup onJoin={handleUserJoin} />
+              </div>
+            ) : (
+              <div className="grid lg:grid-cols-[1fr,320px] gap-6 max-w-5xl mx-auto">
+                <div>
+                  <VotingInterface
+                    title={pollTitle}
+                    choices={choices}
+                    onVote={handleVote}
+                  />
+                  <p className="text-center text-sm text-muted-foreground mt-4">
+                    Voting as: <span className="font-medium">{currentUserName}</span>
+                  </p>
+                </div>
+                <div>
+                  <VoterStatus voters={voters} />
+                  {votesRemaining > 0 && (
+                    <p className="text-sm text-muted-foreground mt-4 text-center">
+                      {votesRemaining} {votesRemaining === 1 ? 'vote' : 'votes'} remaining
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -128,14 +145,11 @@ export default function HomePage() {
                 title={pollTitle}
                 choices={choices}
                 votes={votes}
-                totalVoters={5}
+                totalVoters={MAX_VOTERS}
               />
             </div>
             <div>
-              <VoterStatus 
-                voters={voters}
-                currentVoterId={currentUserId}
-              />
+              <VoterStatus voters={voters} />
             </div>
           </div>
         )}
@@ -143,7 +157,7 @@ export default function HomePage() {
 
       <footer className="border-t mt-12">
         <div className="container mx-auto px-4 py-6 text-center text-sm text-muted-foreground">
-          <p>Create polls and collect votes from up to 5 participants</p>
+          <p>Pass the device to each participant to collect all {MAX_VOTERS} votes</p>
         </div>
       </footer>
     </div>
