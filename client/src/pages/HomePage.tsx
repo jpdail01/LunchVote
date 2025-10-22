@@ -16,11 +16,11 @@ interface Voter {
   hasVoted: boolean;
 }
 
-const MAX_VOTERS = 5;
+const MAX_VOTERS = 6;
 
 export default function HomePage() {
   const [state, setState] = useState<AppState>('setup');
-  const [pollTitle, setPollTitle] = useState("");
+  const [pollTitle, setPollTitle] = useState("Where should we go for Sunday lunch?");
   const [choices, setChoices] = useState<string[]>([]);
   const [voters, setVoters] = useState<Voter[]>([]);
   const [votes, setVotes] = useState<Record<string, string>>({});
@@ -28,7 +28,7 @@ export default function HomePage() {
   const [showUserSetup, setShowUserSetup] = useState(false);
 
   const handleCreatePoll = (title: string, pollChoices: string[]) => {
-    setPollTitle(title);
+    setPollTitle("Where should we go for Sunday lunch?");
     setChoices(pollChoices);
     setState('voting');
     setShowUserSetup(true);
@@ -64,7 +64,7 @@ export default function HomePage() {
 
   const handleReset = () => {
     setState('setup');
-    setPollTitle("");
+    setPollTitle("Where should we go for Sunday lunch?");
     setChoices([]);
     setVoters([]);
     setVotes({});
@@ -78,7 +78,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-background">
       <header className="border-b">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">VoteNow</h1>
+          <h1 className="text-2xl font-semibold">Dailey Family Sunday Lunch Vote</h1>
           <div className="flex items-center gap-2">
             {state !== 'setup' && (
               <Button

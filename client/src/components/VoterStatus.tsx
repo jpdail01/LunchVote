@@ -57,12 +57,12 @@ export default function VoterStatus({ voters, currentVoterId }: VoterStatusProps
           ))}
         </div>
 
-        {votedCount === totalVoters && totalVoters > 0 && (
+        {/* {votedCount === totalVoters && totalVoters > 0 && (
           <div className="mt-4 p-3 bg-chart-3/10 rounded-md flex items-center gap-2">
             <Users className="h-4 w-4 text-chart-3" />
             <span className="text-sm font-medium text-chart-3">All votes collected!</span>
           </div>
-        )}
+        )} */}
       </CardContent>
     </Card>
   );
