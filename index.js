@@ -50,7 +50,7 @@ var vite_config_default = defineConfig({
       deny: ["**/.*"]
     }
   },
-  base: "/LunchVote/public/"
+  base: "/LunchVote/"
 });
 
 // server/vite.ts
