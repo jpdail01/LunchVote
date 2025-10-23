@@ -49,7 +49,8 @@ var vite_config_default = defineConfig({
       strict: true,
       deny: ["**/.*"]
     }
-  }
+  },
+  base: "/LunchVote"
 });
 
 // server/vite.ts
