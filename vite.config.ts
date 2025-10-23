@@ -37,5 +37,5 @@ export default defineConfig({
       deny: ["**/.*"],
     },
   },
-  base: "/LunchVote",
+  base: "/LunchVote/",
 });
