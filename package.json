@@ -10,10 +10,10 @@
     "db:push": "drizzle-kit push",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "dev": "NODE_ENV=development tsx server/index.ts",
-    "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
-    "devNew": "vite",
-    "buildNew": "vite build",
+    "devOLD": "NODE_ENV=development tsx server/index.ts",
+    "buildOLD": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
+    "dev": "vite",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
