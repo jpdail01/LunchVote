@@ -22,7 +22,7 @@ jobs:
       - name: Set Git User Identity
         run: |
           git config --local user.email jpdail01@hotmail.com
-          git config --local user.name Jason Dailey
+          git config --local user.name 'Jason Dailey'
       - name: Deploy to GitHub Pages
         run: npm run deploy
         env:
