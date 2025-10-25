@@ -19,6 +19,7 @@ export default defineConfig({
         ]
       : []),
   ],
+  base: '/LunchVote/',
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
@@ -36,6 +37,5 @@ export default defineConfig({
       strict: true,
       deny: ["**/.*"],
     },
-  },
-  base: "/LunchVote/",
+  }
 });
