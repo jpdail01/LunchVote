@@ -19,7 +19,7 @@ export default defineConfig({
         ]
       : []),
   ],
-  base: '/LunchVote/',
+  base: '/LunchVote/', // process.env.NODE_ENV === 'production' ? '/LunchVote/' : './',
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
