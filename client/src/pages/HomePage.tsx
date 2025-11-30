@@ -16,7 +16,7 @@ interface Voter {
   hasVoted: boolean;
 }
 
-const MAX_VOTERS = 6;
+const MAX_VOTERS = 5;
 
 export default function HomePage() {
   const [state, setState] = useState<AppState>('setup');
